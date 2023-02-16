@@ -83,6 +83,10 @@ const uncolorEdge = (edge: Edge) => {
     context.stroke();  
 }
 
+const routeString = (nextVertice : Vertice) => {
+   return ` -> ${nextVertice.label}` 
+}
+
 const depthFirst = (start: Vertice, end: Vertice) => {
     let step = 0;
     const edgeQueue : Edge[] = [];
@@ -99,6 +103,7 @@ const depthFirst = (start: Vertice, end: Vertice) => {
             nextVertice = edgeDone[step-1].find(vertice => vertice != nextVertice) as Vertice;
             uncolorEdge(edgeDone[step-1])
             step -= 1;
+            route.value = route.value.substring(0, route.value.length - routeString(nextVertice).length)
         } else {
             step += 1;
             edgeQueue.unshift(...nextEdges)
@@ -106,7 +111,7 @@ const depthFirst = (start: Vertice, end: Vertice) => {
             edgeDone.push(nextEdge)
             colorEdge(nextEdge);
             nextVertice = nextEdge.find(vertice => vertice != nextVertice) as Vertice
-            route.value += ` -> ${nextVertice.label}`
+            route.value += routeString(nextVertice)
             if(nextVertice == end) {
                 context.font = "50px arial"
                 context.fillStyle = "green"
