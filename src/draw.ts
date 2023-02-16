@@ -28,7 +28,7 @@ const drawCanvasBorder = () => {
 }
 
 const drawPath = () => {
-    const path : Vertice[] = queue[0];
+    const path : Vertice[] = depthFirstSearch.queue[0];
     for (let i = 0; i < path.length-1; i++) {
         const vertice = path[i];
         const nextVertice = path[i+1]
