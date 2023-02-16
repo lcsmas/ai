@@ -21,6 +21,8 @@ class DepthFirstSearch implements GraphSearch {
                 const nextVertice = this.findNextVertice(edge, currentVertice)
                 if(nextVertice == this.end) {
                     this.found = true
+                    this.queue.unshift([...currentPath, nextVertice])
+                    return
                 };
                 if(!this.done.includes(nextVertice)) {
                     this.queue.unshift([...currentPath, nextVertice])

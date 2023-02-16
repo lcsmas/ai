@@ -3,7 +3,7 @@ interface GraphSearch {
     next: Function,
     start: Vertice,
     end: Vertice,
-    queue: Vertice[][]
+    queue: Vertice[][],
 }
 interface Vertice { x: number, y: number, label: string }
 interface Vertices { [key: string] : Vertice }

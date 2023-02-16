@@ -7,36 +7,57 @@ const foundText: HTMLParagraphElement = document.getElementById("found") as HTML
 const startDiv: HTMLDivElement = document.getElementById("start") as HTMLDivElement;
 const endDiv: HTMLDivElement = document.getElementById("end") as HTMLDivElement;
 
-let depthFirstSearch : GraphSearch;  
+let selectedStart : HTMLButtonElement;
+let selectedEnd : HTMLButtonElement;
+let search : GraphSearch;  
 
 (function init(){
+    const defaultStart = vertices.s
+    const defaultEnd = vertices.e
     for(const [label, vertice] of Object.entries(vertices)) {
-        startDiv.innerHTML += `<button value="${label}">${label}</button>`
+        const btn = document.createElement("button");
+        btn.value = label
+        btn.innerText = label
+        if(label == defaultStart.label) {
+            btn.style.background = "green"
+            selectedStart = btn;
+        }
+        startDiv.appendChild(btn)
     }
     
     for(const [label, vertice] of Object.entries(vertices)) {
-        endDiv.innerHTML += `<button value="${label}">${label}</button>`
+        const btn = document.createElement("button");
+        btn.value = label
+        btn.innerText = label
+        if(label == defaultEnd.label) {
+            btn.style.background = "green"
+            selectedEnd = btn;
+        }
+        endDiv.appendChild(btn)
     }
 
     route.value = ""
-    depthFirstSearch = new DepthFirstSearch();
+    search = new DepthFirstSearch(defaultStart, defaultEnd);
     draw()
 })()
 
 const loop = (search: GraphSearch) => {
-    search.next()
-    draw()
-    route.value = search.queue[0].map(vertice => vertice.label).join(" -> ")
-    if(search.found) {
-        foundText.hidden = false
-    } else {
+    if(!search.found) {
         foundText.hidden = true
+        search.next()
+        draw()
+        route.value = search.queue[0].map(vertice => vertice.label).join(" -> ")
+    }
+    if(search.found) {  
+        foundText.hidden = false;
     }
 }
 
-
 nextButton.addEventListener("click", () => {
-    loop(depthFirstSearch)
+    if(search.found) {
+        search = new DepthFirstSearch(search.start, search.end)
+    }
+    loop(search)
 })
 
 canvas.addEventListener('mousemove', (e) => {
@@ -44,11 +65,17 @@ canvas.addEventListener('mousemove', (e) => {
 })
 
 startDiv.addEventListener("click", (e) => {
+    selectedStart? selectedStart.style.backgroundColor = "" : ""
     const btn = e.target as HTMLButtonElement
-    depthFirstSearch = new DepthFirstSearch(vertices[btn.value], depthFirstSearch.end)
+    selectedStart = btn
+    selectedStart.style.backgroundColor = "green"
+    search = new DepthFirstSearch(vertices[btn.value], search.end)
 })
 
 endDiv.addEventListener("click", (e) => {
+    selectedEnd? selectedEnd.style.backgroundColor = "" : ""
     const btn = e.target as HTMLButtonElement
-    depthFirstSearch = new DepthFirstSearch(depthFirstSearch.start, vertices[btn.value])
+    selectedEnd = btn
+    selectedEnd.style.backgroundColor = "green"
+    search = new DepthFirstSearch(search.start, vertices[btn.value])
 })
